@@ -42,7 +42,6 @@ Thumbs.db
 .vscode/
 .idea/
 *.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# User uploaded media
+/public/uploads/*
+!/public/uploads/.gitkeep

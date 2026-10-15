@@ -142,6 +142,7 @@ export async function POST(request: Request) {
           id: newPost.id,
           content: newPost.content,
           mediaUrl: newPost.mediaUrl,
+          mediaType: newPost.mediaType,
           visibility: newPost.visibility,
           createdAt: newPost.createdAt,
           author: {

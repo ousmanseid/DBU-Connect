@@ -37,8 +37,8 @@ export const createPostSchema = z.object({
     .min(1, 'Post content cannot be empty')
     .max(3000, 'Post content exceeds maximum length of 3000 characters'),
   visibility: z.enum(['CAMPUS', 'FRIENDS_ONLY']).default('CAMPUS'),
-  mediaUrl: z.string().url().optional().or(z.literal('')),
-  mediaType: z.enum(['IMAGE', 'DOCUMENT']).optional(),
+  mediaUrl: z.string().max(2048).optional().or(z.literal('')),
+  mediaType: z.enum(['IMAGE', 'VIDEO', 'DOCUMENT']).optional(),
 });
 
 export const createCommentSchema = z.object({
@@ -98,7 +98,7 @@ export const createListingSchema = z.object({
   condition: z.enum(marketplaceConditions, {
     errorMap: () => ({ message: 'Please specify the item condition' }),
   }),
-  imageUrl: z.string().url().optional().or(z.literal('')),
+  imageUrl: z.string().max(2048).optional().or(z.literal('')),
   location: z.string().max(100).optional(),
 });
 
