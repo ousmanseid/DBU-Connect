@@ -87,7 +87,7 @@ export default function Navigation() {
   const navLinks = [
     { href: '/', label: 'Home', icon: Home },
     { href: '/students', label: 'Discover People', icon: Users },
-    { href: '/create', label: 'Create', icon: Plus, isButton: true },
+    { href: '/create', label: 'Create', icon: Plus },
     {
       href: '/inbox',
       label: 'Inbox',
@@ -117,7 +117,7 @@ export default function Navigation() {
   const mobileNavLinks = [
     { href: '/', label: 'Home', icon: Home },
     { href: '/students', label: 'Discover', icon: Users },
-    { href: '/create', label: 'Create', icon: Plus, isPrimary: true },
+    { href: '/create', label: 'Create', icon: Plus },
     {
       href: '/inbox',
       label: 'Inbox',
@@ -175,23 +175,6 @@ export default function Navigation() {
             {navLinks.map((link) => {
               const Icon = link.icon;
               const isActive = isRouteActive(link.href);
-
-              if (link.isButton) {
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`nav-create-btn ${isActive ? 'active' : ''}`}
-                    aria-current={isActive ? 'page' : undefined}
-                  >
-                    <div className="nav-create-icon-wrapper">
-                      <Plus size={16} color="#fff" />
-                    </div>
-                    <span>{link.label}</span>
-                  </Link>
-                );
-              }
-
               const isAccent = link.accent;
 
               return (
@@ -347,20 +330,6 @@ export default function Navigation() {
         {mobileNavLinks.map((link) => {
           const Icon = link.icon;
           const isActive = isRouteActive(link.href);
-
-          if (link.isPrimary) {
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-label="Create Post"
-                className={`mobile-nav-create ${isActive ? 'active' : ''}`}
-                aria-current={isActive ? 'page' : undefined}
-              >
-                <Plus size={22} color="#fff" />
-              </Link>
-            );
-          }
 
           return (
             <Link

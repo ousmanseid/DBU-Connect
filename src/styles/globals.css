@@ -580,121 +580,6 @@ input, textarea, select {
   filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.6));
 }
 
-/* ==========================================================================
-   Desktop Create Action Button (.nav-create-btn)
-   ========================================================================== */
-.nav-create-btn {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-md);
-  font-size: 0.925rem;
-  font-weight: 700;
-  color: #ffffff;
-  text-decoration: none;
-  margin-top: 0.35rem;
-  margin-bottom: 0.35rem;
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.32);
-  transition:
-    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.22s ease,
-    background 0.25s ease,
-    border-color 0.22s ease;
-  user-select: none;
-  outline: none;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-/* Subtle sheen sweep across create button on hover */
-.nav-create-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
-  transform: skewX(-20deg);
-  transition: left 0.6s ease;
-  pointer-events: none;
-}
-
-.nav-create-btn:hover::before {
-  left: 125%;
-}
-
-.nav-create-icon-wrapper {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.22);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease;
-}
-
-.nav-create-btn:hover {
-  background: linear-gradient(135deg, #1d4ed8 0%, #6d28d9 100%);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
-  transform: translateY(-1.5px) scale(1.01);
-  border-color: rgba(255, 255, 255, 0.28);
-}
-
-.nav-create-btn:hover .nav-create-icon-wrapper {
-  transform: rotate(90deg) scale(1.1);
-  background: rgba(255, 255, 255, 0.32);
-}
-
-/* Create Button Active State (when on /create) */
-.nav-create-btn.active {
-  background: linear-gradient(135deg, #1d4ed8 0%, #9333ea 100%);
-  border-color: rgba(216, 180, 254, 0.6);
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.35), 0 6px 22px rgba(124, 58, 237, 0.55);
-}
-
-.nav-create-btn.active::after {
-  content: '';
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 0 8px #ffffff;
-  animation: pulseCreateDot 2s infinite ease-in-out;
-}
-
-@keyframes pulseCreateDot {
-  0%, 100% {
-    opacity: 1;
-    transform: translateY(-50%) scale(1);
-  }
-  50% {
-    opacity: 0.6;
-    transform: translateY(-50%) scale(0.85);
-  }
-}
-
-.nav-create-btn:active {
-  transform: scale(0.97) translateY(0);
-  transition-duration: 0.08s;
-}
-
-.nav-create-btn:focus-visible {
-  outline: 2px solid #a855f7;
-  outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.35);
-}
-
 /* Badges */
 .nav-badge {
   padding: 0.15rem 0.5rem;
@@ -819,49 +704,6 @@ input, textarea, select {
   border-radius: 50%;
   background: var(--accent-rose);
   box-shadow: 0 0 6px var(--accent-rose);
-}
-
-/* Mobile Primary / Create Action */
-.mobile-nav-create {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  color: #ffffff;
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.45);
-  transform: translateY(-10px);
-  transition:
-    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.22s ease,
-    background 0.22s ease;
-  border: 2px solid var(--bg-secondary);
-  outline: none;
-  -webkit-tap-highlight-color: transparent;
-  text-decoration: none;
-}
-
-.mobile-nav-create:hover {
-  transform: translateY(-13px) scale(1.08);
-  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.55);
-}
-
-.mobile-nav-create:active {
-  transform: translateY(-8px) scale(0.94);
-  transition-duration: 0.08s;
-}
-
-.mobile-nav-create.active {
-  background: linear-gradient(135deg, #2563eb 0%, #c084fc 100%);
-  box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.45), 0 6px 20px rgba(59, 130, 246, 0.6);
-  transform: translateY(-12px) scale(1.06);
-}
-
-.mobile-nav-create:focus-visible {
-  outline: 2px solid #a855f7;
-  outline-offset: 2px;
 }
 
 @media (max-width: 768px) {
@@ -1772,12 +1614,8 @@ input, textarea, select {
   .nav-link-item::before,
   .nav-link-icon,
   .nav-link-label,
-  .nav-create-btn,
-  .nav-create-btn::before,
-  .nav-create-icon-wrapper,
   .mobile-nav-link,
-  .mobile-nav-link .mobile-nav-icon,
-  .mobile-nav-create {
+  .mobile-nav-link .mobile-nav-icon {
     transition: none !important;
     animation: none !important;
     transform: none !important;
