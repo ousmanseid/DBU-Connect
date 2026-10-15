@@ -63,13 +63,13 @@ Follow these steps to run the project locally once the required technologies and
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/YOUR-USERNAME/dbu-connect.git
+   git clone https://github.com/ousmanseid/dbuconnect.git
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd dbu-connect
+   cd dbuconnect
    ```
 
 3. Install the required dependencies according to your project's technology stack.
