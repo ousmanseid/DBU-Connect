@@ -358,6 +358,7 @@ input, textarea, select {
   border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   position: sticky;
   top: 0;
   height: 100vh;
@@ -394,28 +395,481 @@ input, textarea, select {
   margin: 0 auto;
 }
 
-/* Mobile Bottom Navigation */
+/* ==========================================================================
+   Navigation System (Desktop & Mobile)
+   ========================================================================== */
+
+/* Desktop Navigation List */
+.nav-links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+/* Base Nav Item */
+.nav-link-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.725rem 1rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  border: 1px solid transparent;
+  background: transparent;
+  transition:
+    background 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.2s ease,
+    transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+  outline: none;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Subtle Animated Left Active Indicator Bar */
+.nav-link-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 3.5px;
+  height: 60%;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(180deg, #38bdf8 0%, #818cf8 100%);
+  transition: transform 0.26s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+  opacity: 0;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
+  pointer-events: none;
+}
+
+/* Inner content alignment */
+.nav-link-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+/* Icon styling & transitions */
+.nav-link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: currentColor;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease, filter 0.2s ease;
+}
+
+/* Label styling & transitions */
+.nav-link-label {
+  font-size: 0.9rem;
+  letter-spacing: -0.01em;
+  transition: transform 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+}
+
+/* Desktop Hover State (non-active items) */
+.nav-link-item:hover:not(.active) {
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.08) 0%, rgba(59, 130, 246, 0.03) 100%);
+  border-color: rgba(56, 189, 248, 0.15);
+  color: #ffffff;
+  transform: translateX(3px);
+}
+
+.nav-link-item:hover:not(.active) .nav-link-icon {
+  transform: scale(1.12);
+  color: #38bdf8;
+}
+
+.nav-link-item:hover:not(.active) .nav-link-label {
+  transform: translateX(1px);
+}
+
+/* Desktop Active State */
+.nav-link-item.active {
+  color: #ffffff;
+  font-weight: 700;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.92) 0%, rgba(59, 130, 246, 0.95) 100%);
+  border-color: rgba(147, 197, 253, 0.35);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.38), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  position: relative;
+}
+
+/* Active indicator appears on active item */
+.nav-link-item.active::before {
+  transform: translateY(-50%) scaleY(1);
+  opacity: 1;
+}
+
+/* Subtle ambient sheen on the active item */
+.nav-link-item.active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: radial-gradient(circle at 80% 50%, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.nav-link-item.active .nav-link-icon {
+  transform: scale(1.08);
+  color: #ffffff;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
+}
+
+.nav-link-item.active:hover {
+  background: linear-gradient(135deg, rgba(29, 78, 216, 0.95) 0%, rgba(37, 99, 235, 0.98) 100%);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.48), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  transform: translateX(2px);
+}
+
+/* Click / Press Animation */
+.nav-link-item:active {
+  transform: scale(0.97) translateX(1px);
+  transition-duration: 0.08s;
+}
+
+/* Keyboard Focus Accessibility */
+.nav-link-item:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.25);
+}
+
+/* Menilik AI Gold / Purple Special Accent Item */
+.nav-link-item.accent-gold {
+  color: var(--primary-gold);
+}
+
+.nav-link-item.accent-gold .nav-link-icon {
+  color: var(--primary-gold);
+}
+
+.nav-link-item.accent-gold:hover:not(.active) {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.12) 0%, rgba(168, 85, 247, 0.06) 100%);
+  border-color: rgba(245, 158, 11, 0.25);
+  color: #fbbf24;
+}
+
+.nav-link-item.accent-gold:hover:not(.active) .nav-link-icon {
+  color: #fbbf24;
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.5));
+}
+
+.nav-link-item.accent-gold.active {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.9) 0%, rgba(217, 119, 6, 0.85) 100%);
+  border-color: rgba(251, 191, 36, 0.4);
+  box-shadow: 0 4px 18px rgba(124, 58, 237, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.nav-link-item.accent-gold.active::before {
+  background: linear-gradient(180deg, #fbbf24 0%, #c084fc 100%);
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.7);
+}
+
+.nav-link-item.accent-gold.active .nav-link-icon {
+  color: #ffffff;
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.6));
+}
+
+/* ==========================================================================
+   Desktop Create Action Button (.nav-create-btn)
+   ========================================================================== */
+.nav-create-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.925rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-decoration: none;
+  margin-top: 0.35rem;
+  margin-bottom: 0.35rem;
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.32);
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.22s ease,
+    background 0.25s ease,
+    border-color 0.22s ease;
+  user-select: none;
+  outline: none;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Subtle sheen sweep across create button on hover */
+.nav-create-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.6s ease;
+  pointer-events: none;
+}
+
+.nav-create-btn:hover::before {
+  left: 125%;
+}
+
+.nav-create-icon-wrapper {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease;
+}
+
+.nav-create-btn:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #6d28d9 100%);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+  transform: translateY(-1.5px) scale(1.01);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.nav-create-btn:hover .nav-create-icon-wrapper {
+  transform: rotate(90deg) scale(1.1);
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* Create Button Active State (when on /create) */
+.nav-create-btn.active {
+  background: linear-gradient(135deg, #1d4ed8 0%, #9333ea 100%);
+  border-color: rgba(216, 180, 254, 0.6);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.35), 0 6px 22px rgba(124, 58, 237, 0.55);
+}
+
+.nav-create-btn.active::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 8px #ffffff;
+  animation: pulseCreateDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseCreateDot {
+  0%, 100% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateY(-50%) scale(0.85);
+  }
+}
+
+.nav-create-btn:active {
+  transform: scale(0.97) translateY(0);
+  transition-duration: 0.08s;
+}
+
+.nav-create-btn:focus-visible {
+  outline: 2px solid #a855f7;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.35);
+}
+
+/* Badges */
+.nav-badge {
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  background: var(--accent-rose);
+  color: #fff;
+  fontSize: 0.7rem;
+  font-weight: 700;
+  line-height: 1.2;
+  box-shadow: 0 2px 6px rgba(244, 63, 94, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.nav-link-item:hover .nav-badge {
+  transform: scale(1.08);
+}
+
+/* ==========================================================================
+   Mobile Bottom Navigation (.mobile-nav)
+   ========================================================================== */
 .mobile-nav {
   display: none;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 60px;
-  background: var(--bg-secondary);
+  height: 64px;
+  background: rgba(13, 22, 40, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-top: 1px solid var(--border-subtle);
   z-index: 50;
   justify-content: space-around;
   align-items: center;
   padding: 0 0.5rem;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.mobile-nav-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.35rem 0.65rem;
+  border-radius: 10px;
+  position: relative;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-width: 54px;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-nav-link .mobile-nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
+}
+
+.mobile-nav-link:hover {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.mobile-nav-link:hover .mobile-nav-icon {
+  transform: translateY(-1px) scale(1.08);
+}
+
+/* Mobile Active State */
+.mobile-nav-link.active {
+  color: #38bdf8;
+  font-weight: 700;
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.mobile-nav-link.active .mobile-nav-icon {
+  color: #38bdf8;
+  transform: translateY(-1px) scale(1.12);
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.5));
+}
+
+/* Active bottom indicator bar */
+.mobile-nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #38bdf8, #818cf8);
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+}
+
+/* Mobile Touch / Click Press Feedback */
+.mobile-nav-link:active {
+  transform: scale(0.92);
+  transition-duration: 0.08s;
+}
+
+.mobile-nav-link:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 1px;
+}
+
+/* Mobile Notification Dot */
+.mobile-nav-badge {
+  position: absolute;
+  top: 2px;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-rose);
+  box-shadow: 0 0 6px var(--accent-rose);
+}
+
+/* Mobile Primary / Create Action */
+.mobile-nav-create {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.45);
+  transform: translateY(-10px);
+  transition:
+    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.22s ease,
+    background 0.22s ease;
+  border: 2px solid var(--bg-secondary);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+}
+
+.mobile-nav-create:hover {
+  transform: translateY(-13px) scale(1.08);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.55);
+}
+
+.mobile-nav-create:active {
+  transform: translateY(-8px) scale(0.94);
+  transition-duration: 0.08s;
+}
+
+.mobile-nav-create.active {
+  background: linear-gradient(135deg, #2563eb 0%, #c084fc 100%);
+  box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.45), 0 6px 20px rgba(59, 130, 246, 0.6);
+  transform: translateY(-12px) scale(1.06);
+}
+
+.mobile-nav-create:focus-visible {
+  outline: 2px solid #a855f7;
+  outline-offset: 2px;
 }
 
 @media (max-width: 768px) {
   .app-sidebar {
-    display: none;
+    display: none !important;
   }
   .mobile-nav {
-    display: flex;
+    display: flex !important;
   }
   .app-content {
     padding: 1rem 1rem 5rem 1rem;
@@ -1313,9 +1767,20 @@ input, textarea, select {
   .student-card-item,
   .btn-view-profile,
   .discover-hero-btn,
-  .discover-tab-pill {
+  .discover-tab-pill,
+  .nav-link-item,
+  .nav-link-item::before,
+  .nav-link-icon,
+  .nav-link-label,
+  .nav-create-btn,
+  .nav-create-btn::before,
+  .nav-create-icon-wrapper,
+  .mobile-nav-link,
+  .mobile-nav-link .mobile-nav-icon,
+  .mobile-nav-create {
     transition: none !important;
     animation: none !important;
+    transform: none !important;
   }
 }
 

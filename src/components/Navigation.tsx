@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   Home,
@@ -76,6 +77,12 @@ export default function Navigation() {
     router.refresh();
   };
 
+  const isRouteActive = (href: string) => {
+    if (!pathname) return false;
+    if (href === '/') return pathname === '/';
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
   // Main navigation ordering matching reference design
   const navLinks = [
     { href: '/', label: 'Home', icon: Home },
@@ -123,10 +130,21 @@ export default function Navigation() {
   return (
     <>
       {/* Desktop Sidebar Navigation */}
-      <aside className="app-sidebar" style={{ display: 'flex', flexDirection: 'column', height: '100vh', justifyContent: 'space-between' }}>
+      <aside className="app-sidebar">
         <div>
           {/* Logo Header */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem', padding: '0 0.5rem' }}>
+          <Link
+            href="/"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              marginBottom: '2rem',
+              padding: '0 0.5rem',
+              textDecoration: 'none',
+              cursor: 'pointer',
+            }}
+          >
             <div
               style={{
                 width: '42px',
@@ -137,6 +155,7 @@ export default function Navigation() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 boxShadow: '0 4px 12px rgba(56, 189, 248, 0.3)',
+                flexShrink: 0,
               }}
             >
               <GraduationCap size={24} color="#fff" />
@@ -149,100 +168,51 @@ export default function Navigation() {
                 Connect • Share • Grow
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* Navigation Links */}
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+          <nav className="nav-links-list" aria-label="Main Navigation">
             {navLinks.map((link) => {
               const Icon = link.icon;
-              const isActive = pathname === link.href;
+              const isActive = isRouteActive(link.href);
 
               if (link.isButton) {
                 return (
-                  <a
+                  <Link
                     key={link.href}
                     href={link.href}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.75rem',
-                      padding: '0.75rem 1rem',
-                      borderRadius: 'var(--radius-md)',
-                      fontSize: '0.925rem',
-                      fontWeight: 700,
-                      color: '#fff',
-                      background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
-                      boxShadow: '0 4px 14px rgba(59, 130, 246, 0.35)',
-                      marginTop: '0.25rem',
-                      marginBottom: '0.25rem',
-                      transition: 'all var(--transition-fast)',
-                    }}
+                    className={`nav-create-btn ${isActive ? 'active' : ''}`}
+                    aria-current={isActive ? 'page' : undefined}
                   >
-                    <div
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '50%',
-                        background: 'rgba(255, 255, 255, 0.2)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
+                    <div className="nav-create-icon-wrapper">
                       <Plus size={16} color="#fff" />
                     </div>
                     <span>{link.label}</span>
-                  </a>
+                  </Link>
                 );
               }
 
+              const isAccent = link.accent;
+
               return (
-                <a
+                <Link
                   key={link.href}
                   href={link.href}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '0.75rem 1rem',
-                    borderRadius: '12px',
-                    fontSize: '0.9rem',
-                    fontWeight: isActive ? 700 : 500,
-                    color: isActive ? '#fff' : link.accent ? 'var(--primary-gold)' : 'var(--text-muted)',
-                    background: isActive ? 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)' : 'transparent',
-                    border: isActive ? '1px solid rgba(255, 255, 255, 0.15)' : '1px solid transparent',
-                    boxShadow: isActive ? '0 4px 14px rgba(37, 99, 235, 0.35)' : 'none',
-                    transition: 'all var(--transition-fast)',
-                  }}
+                  className={`nav-link-item ${isActive ? 'active' : ''} ${isAccent ? 'accent-gold' : ''}`}
+                  aria-current={isActive ? 'page' : undefined}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <Icon
-                      size={18}
-                      color={
-                        isActive
-                          ? '#ffffff'
-                          : link.accent
-                          ? 'var(--primary-gold)'
-                          : 'currentColor'
-                      }
-                    />
-                    <span>{link.label}</span>
+                  <div className="nav-link-content">
+                    <span className="nav-link-icon">
+                      <Icon size={18} />
+                    </span>
+                    <span className="nav-link-label">{link.label}</span>
                   </div>
                   {link.badge !== undefined && (
-                    <span
-                      style={{
-                        padding: '0.15rem 0.5rem',
-                        borderRadius: 'var(--radius-full)',
-                        background: 'var(--accent-rose)',
-                        color: '#fff',
-                        fontSize: '0.7rem',
-                        fontWeight: 700,
-                      }}
-                    >
+                    <span className="nav-badge">
                       {link.badge}
                     </span>
                   )}
-                </a>
+                </Link>
               );
             })}
           </nav>
@@ -282,7 +252,7 @@ export default function Navigation() {
             <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: '1.4', marginBottom: '0.875rem' }}>
               Connect with amazing students, make friends and grow together.
             </p>
-            <a
+            <Link
               href="/students"
               className="btn btn-primary"
               style={{
@@ -295,19 +265,20 @@ export default function Navigation() {
                 borderRadius: '10px',
                 color: '#fff',
                 fontWeight: 700,
+                textDecoration: 'none',
               }}
             >
               Explore Now →
-            </a>
+            </Link>
           </div>
 
           {/* User Profile Mini Bar */}
           <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1rem' }}>
             {currentUser ? (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <a
+                <Link
                   href="/profile"
-                  style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0 }}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: 0, textDecoration: 'none' }}
                 >
                   <div
                     style={{
@@ -344,7 +315,7 @@ export default function Navigation() {
                       DBU Student
                     </div>
                   </div>
-                </a>
+                </Link>
                 <button
                   onClick={handleLogout}
                   title="Sign out"
@@ -352,6 +323,9 @@ export default function Navigation() {
                     color: 'var(--text-muted)',
                     padding: '0.5rem',
                     borderRadius: 'var(--radius-sm)',
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
                   }}
                 >
                   <LogOut size={16} />
@@ -359,9 +333,9 @@ export default function Navigation() {
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <a href="/login" className="btn btn-primary" style={{ width: '100%', fontSize: '0.825rem' }}>
+                <Link href="/login" className="btn btn-primary" style={{ width: '100%', fontSize: '0.825rem', textDecoration: 'none' }}>
                   <LogIn size={15} /> Sign In
-                </a>
+                </Link>
               </div>
             )}
           </div>
@@ -369,67 +343,43 @@ export default function Navigation() {
       </aside>
 
       {/* Mobile Bottom Navigation Bar */}
-      <nav className="mobile-nav">
+      <nav className="mobile-nav" aria-label="Mobile Navigation">
         {mobileNavLinks.map((link) => {
           const Icon = link.icon;
-          const isActive = pathname === link.href;
+          const isActive = isRouteActive(link.href);
 
           if (link.isPrimary) {
             return (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
                 aria-label="Create Post"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '44px',
-                  height: '44px',
-                  borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
-                  color: '#fff',
-                  boxShadow: '0 4px 14px rgba(59, 130, 246, 0.4)',
-                  transform: 'translateY(-10px)',
-                  transition: 'transform var(--transition-fast)',
-                }}
+                className={`mobile-nav-create ${isActive ? 'active' : ''}`}
+                aria-current={isActive ? 'page' : undefined}
               >
                 <Plus size={22} color="#fff" />
-              </a>
+              </Link>
             );
           }
 
           return (
-            <a
+            <Link
               key={link.href}
               href={link.href}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '0.2rem',
-                color: isActive ? '#38bdf8' : 'var(--text-muted)',
-                fontSize: '0.7rem',
-                fontWeight: isActive ? 600 : 500,
-                position: 'relative',
-              }}
+              className={`mobile-nav-link ${isActive ? 'active' : ''}`}
+              aria-current={isActive ? 'page' : undefined}
             >
-              <Icon size={20} />
+              <span className="mobile-nav-icon">
+                <Icon size={20} />
+              </span>
               <span>{link.label}</span>
-              {link.badge && (
+              {link.badge !== undefined && (
                 <span
-                  style={{
-                    position: 'absolute',
-                    top: '-4px',
-                    right: '6px',
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    background: 'var(--accent-rose)',
-                  }}
+                  className="mobile-nav-badge"
+                  aria-label={`${link.badge} unread items`}
                 />
               )}
-            </a>
+            </Link>
           );
         })}
       </nav>
