@@ -6,7 +6,7 @@
 **Repository:** [https://github.com/ousmanseid/DBU-Connect](https://github.com/ousmanseid/DBU-Connect)
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
-[![Tests](https://img.shields.io/badge/tests-34%20passed-success.svg)]()
+[![Tests](https://img.shields.io/badge/tests-44%20passed-success.svg)]()
 [![Framework](https://img.shields.io/badge/Next.js-14%20App%20Router-black.svg)]()
 [![ORM](https://img.shields.io/badge/Prisma-5.22-blue.svg)]()
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)]()
@@ -17,23 +17,36 @@
 
 **DBU Connect** is a complete, secure, university-tailored web application built to centralize communication, campus commerce, and academic information access for the Debre Berhan University community.
 
-The platform eliminates fragmented communication across unmoderated channels by providing:
+The platform provides:
 1. **Institutional Eligibility Verification:** Account creation is strictly gated by official Registrar student roster records and institutional emails (`@dbu.edu.et`).
-2. **Social Feed & Community Discussions:** Real-time post composer, comments, like/unlike actions with database-level duplicate prevention, and share counters.
-3. **Peer-to-Peer Campus Marketplace:** Secure student exchange for textbooks, dorm gear, calculators, and electronics with category filtering, search, and bookmarks.
-4. **Direct Messaging & Inbox:** Private 1-on-1 conversations with participant authorization guards and unread counters.
-5. **Menilik AI University Assistant:** Retrieval-Augmented Generation (RAG) assistant grounded in official DBU senate legislation and student handbooks, complete with section citations and uncertainty detection.
-6. **Administrative & Registrar Desk:** Role-based dashboards for Super Admins, Campus Admins, and Registrars with batch roster reconciliation and audit logging.
+2. **Campus Social Feed & Video Playback:** Home feed with personalized student welcome, post reactions (likes with DB-level duplicate prevention), threaded comments, share counters, and responsive HTML5 video playback.
+3. **Dedicated Post Creation (`/create`):** Independent content-creation workflow supporting text posts, direct photo uploads, and video uploads with preview, drag-and-drop, and upload progress.
+4. **Student Directory & Discovery (`/students`):** Privacy-preserving student search by name and department, dynamic connection status, and direct profile navigation.
+5. **Full Friend-Request Lifecycle:** Relationship management (`Add Friend`, `Request Sent`, `Accept Request`, `Connected`, `Cancel`, `Remove Friend`) synchronized across directory, profiles, and inbox.
+6. **3-Tab Campus Inbox (`/inbox`):** Unified communication center featuring direct 1-on-1 messages, incoming/outgoing friend requests with one-click actions, and campus activity notifications.
+7. **Peer-to-Peer Campus Marketplace (`/marketplace`):** Secure student exchange for textbooks, dorm gear, calculators, and electronics with category filtering, search, and bookmarks.
+8. **Menilik AI University Assistant (`/menilik`):** Retrieval-Augmented Generation (RAG) assistant grounded in official DBU senate legislation and student handbooks, complete with section citations and uncertainty detection.
+9. **Administrative & Registrar Desk (`/admin`):** Role-based dashboards for Super Admins, Campus Admins, and Registrars with batch roster reconciliation and audit logging.
 
 ---
 
 ## 🚀 Key Modules & Implemented Features
 
-### 🔐 1. Authentication, Eligibility & Roster Verification
-- **Multi-Step Onboarding:** Pre-checks student ID (`DBU/...`) and university email against approved Registrar records.
-- **Roster Claim Locking:** Atomic database transactions guarantee a student roster entry can only ever be claimed once.
-- **Security Guards:** Password salting and hashing with bcrypt (10 rounds); tamper-proof signed JWTs stored in `HttpOnly` cookies.
-- **Privacy by Design:** Internal institutional IDs and private emails are restricted to registrar workflows and **never exposed publicly** in profiles or search endpoints.
+### 🧭 1. Unified Navigation Structure
+- **Main Destinations:** `Home` (`/`), `Create` (`/create`), `Inbox` (`/inbox`), `Marketplace` (`/marketplace`), `Menilik AI` (`/menilik`), `Profile` (`/profile`), and `Discover Students` (`/students`).
+- **Responsive Layout:** Sleek desktop sidebar with university crest and user badge; ergonomic mobile bottom navigation with quick-action center Create button.
+- **Global Header:** Active student search bar with instant directory query and notifications drawer.
+
+### 📸 2. Real Image & Video Uploads (`/api/upload`)
+- **Direct Device Selection:** Students upload images (`.jpg`, `.png`, `.webp`, `.gif` up to 10MB) and videos (`.mp4`, `.webm`, `.mov` up to 50MB) directly from their phone or computer.
+- **Server-Side Security:** Validates binary magic byte headers (e.g. PNG signature `89 50 4E 47`, JPEG `FF D8 FF`, MP4 `ftyp`) to prevent MIME and extension spoofing.
+- **Safe Persistence:** Media files receive cryptographically random UUID names and are stored securely under `public/uploads/`.
+- **In-Feed HTML5 Video Player:** Feed posts detect uploaded videos and render responsive video players with playback controls and metadata preloading.
+
+### 👥 3. Student Search & Friend Request Lifecycle
+- **Searchable Directory:** Filter verified students across all 15 academic departments with bounded pagination.
+- **Privacy Enforcement:** Internal institutional IDs, private university emails, and phone numbers are strictly stripped from search endpoints.
+- **Friend Request State Machine:** Supports real-time database state transitions (`Add Friend` -> `Request Sent` -> `Accept/Decline` -> `Connected` -> `Cancel / Disconnect`) with canonical pair indexing in `Friendship`.
 
 ### 🌐 2. Campus Social Feed
 - **Post Composer:** Publish text posts with optional media attachments and visibility controls (*Campus Wide* vs *Friends Only*).
