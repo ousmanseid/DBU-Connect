@@ -173,9 +173,10 @@ async function main() {
       profile: {
         create: {
           displayName: 'Abebe Kebede',
-          bio: 'Final year CS major passionate about mobile development, distributed systems, and open source.',
-          department: 'Computer Science',
+          bio: 'Passionate about coding, AI and building useful solutions for real problems.',
+          department: 'Software Engineering',
           graduationYear: 2026,
+          avatarUrl: '/images/avatars/abebe.svg',
           privacyLevel: 'CAMPUS_ONLY',
         },
       },
@@ -200,6 +201,7 @@ async function main() {
           bio: '3rd year Software Engineering student. President of the DBU Women in Technology Club.',
           department: 'Software Engineering',
           graduationYear: 2026,
+          avatarUrl: '/images/avatars/bethlehem.svg',
           privacyLevel: 'CAMPUS_ONLY',
         },
       },
@@ -224,6 +226,7 @@ async function main() {
           bio: 'ECE Student interested in embedded robotics and campus electronics repair.',
           department: 'Electrical & Computer Engineering',
           graduationYear: 2027,
+          avatarUrl: '/images/avatars/yared.svg',
           privacyLevel: 'CAMPUS_ONLY',
         },
       },
@@ -234,11 +237,259 @@ async function main() {
     data: { claimedByUserId: studentC.id },
   });
 
+  // Additional campus students from reference design
+  const studentMeaza = await prisma.user.create({
+    data: {
+      email: 'meaza.tesfaye@dbu.edu.et',
+      passwordHash: defaultPasswordHash,
+      role: 'STUDENT',
+      status: 'ACTIVE',
+      emailVerifiedAt: new Date(),
+      profile: {
+        create: {
+          displayName: 'Meaza Tesfaye',
+          bio: "Tech enthusiast | Learner | Dreamer. Let's connect! 💙",
+          department: 'Computer Science',
+          graduationYear: 2026,
+          avatarUrl: '/images/avatars/meaza.svg',
+          privacyLevel: 'CAMPUS_ONLY',
+        },
+      },
+    },
+  });
+
+  const studentDaniel = await prisma.user.create({
+    data: {
+      email: 'daniel.girma@dbu.edu.et',
+      passwordHash: defaultPasswordHash,
+      role: 'STUDENT',
+      status: 'ACTIVE',
+      emailVerifiedAt: new Date(),
+      profile: {
+        create: {
+          displayName: 'Daniel Girma',
+          bio: 'Building better systems one line of code at a time.',
+          department: 'Software Engineering',
+          graduationYear: 2026,
+          avatarUrl: '/images/avatars/daniel.svg',
+          privacyLevel: 'CAMPUS_ONLY',
+        },
+      },
+    },
+  });
+
+  const studentLidya = await prisma.user.create({
+    data: {
+      email: 'lidya.alemu@dbu.edu.et',
+      passwordHash: defaultPasswordHash,
+      role: 'STUDENT',
+      status: 'ACTIVE',
+      emailVerifiedAt: new Date(),
+      profile: {
+        create: {
+          displayName: 'Lidya Alemu',
+          bio: 'Code • Learn • Create something great!',
+          department: 'Information Systems',
+          graduationYear: 2025,
+          avatarUrl: '/images/avatars/lidya.svg',
+          privacyLevel: 'CAMPUS_ONLY',
+        },
+      },
+    },
+  });
+
+  const studentYonatan = await prisma.user.create({
+    data: {
+      email: 'yonatan.tsegaye@dbu.edu.et',
+      passwordHash: defaultPasswordHash,
+      role: 'STUDENT',
+      status: 'ACTIVE',
+      emailVerifiedAt: new Date(),
+      profile: {
+        create: {
+          displayName: 'Yonatan Tsegaye',
+          bio: 'Always curious about new technologies and ideas.',
+          department: 'Software Engineering',
+          graduationYear: 2027,
+          avatarUrl: '/images/avatars/yonatan.svg',
+          privacyLevel: 'CAMPUS_ONLY',
+        },
+      },
+    },
+  });
+
+  const studentSelamawit = await prisma.user.create({
+    data: {
+      email: 'selamawit.wondimu@dbu.edu.et',
+      passwordHash: defaultPasswordHash,
+      role: 'STUDENT',
+      status: 'ACTIVE',
+      emailVerifiedAt: new Date(),
+      profile: {
+        create: {
+          displayName: 'Selamawit Wondimu',
+          bio: 'Learning, collaborating, and making an impact.',
+          department: 'Computer Science',
+          graduationYear: 2026,
+          avatarUrl: '/images/avatars/selamawit.svg',
+          privacyLevel: 'CAMPUS_ONLY',
+        },
+      },
+    },
+  });
+
+  const studentHaile = await prisma.user.create({
+    data: {
+      email: 'haile.demisse@dbu.edu.et',
+      passwordHash: defaultPasswordHash,
+      role: 'STUDENT',
+      status: 'ACTIVE',
+      emailVerifiedAt: new Date(),
+      profile: {
+        create: {
+          displayName: 'Haile Demisse',
+          bio: 'Turning ideas into real-world solutions. 🚀',
+          department: 'Software Engineering',
+          graduationYear: 2026,
+          avatarUrl: '/images/avatars/haile.svg',
+          privacyLevel: 'CAMPUS_ONLY',
+        },
+      },
+    },
+  });
+
+  const studentRuth = await prisma.user.create({
+    data: {
+      email: 'ruth.abebe@dbu.edu.et',
+      passwordHash: defaultPasswordHash,
+      role: 'STUDENT',
+      status: 'ACTIVE',
+      emailVerifiedAt: new Date(),
+      profile: {
+        create: {
+          displayName: 'Ruth Abebe',
+          bio: 'Technology for a better and brighter future.',
+          department: 'Information Systems',
+          graduationYear: 2025,
+          avatarUrl: '/images/avatars/ruth.svg',
+          privacyLevel: 'CAMPUS_ONLY',
+        },
+      },
+    },
+  });
+
+  const studentFitsum = await prisma.user.create({
+    data: {
+      email: 'fitsum.arega@dbu.edu.et',
+      passwordHash: defaultPasswordHash,
+      role: 'STUDENT',
+      status: 'ACTIVE',
+      emailVerifiedAt: new Date(),
+      profile: {
+        create: {
+          displayName: 'Fitsum Arega',
+          bio: 'Civil engineering student, passionate about sustainable campus infrastructure.',
+          department: 'Civil Engineering',
+          graduationYear: 2025,
+          avatarUrl: '/images/avatars/fitsum.svg',
+          privacyLevel: 'CAMPUS_ONLY',
+        },
+      },
+    },
+  });
+
+  const studentKindu = await prisma.user.create({
+    data: {
+      email: 'kindu.shiferaw@dbu.edu.et',
+      passwordHash: defaultPasswordHash,
+      role: 'STUDENT',
+      status: 'ACTIVE',
+      emailVerifiedAt: new Date(),
+      profile: {
+        create: {
+          displayName: 'Kindu Shiferaw',
+          bio: 'Hardware hacker, embedded robotics, and circuit design.',
+          department: 'Electrical & Computer Engineering',
+          graduationYear: 2026,
+          avatarUrl: '/images/avatars/kindu.svg',
+          privacyLevel: 'CAMPUS_ONLY',
+        },
+      },
+    },
+  });
+
+  const studentMarta = await prisma.user.create({
+    data: {
+      email: 'marta.bekele@dbu.edu.et',
+      passwordHash: defaultPasswordHash,
+      role: 'STUDENT',
+      status: 'ACTIVE',
+      emailVerifiedAt: new Date(),
+      profile: {
+        create: {
+          displayName: 'Marta Bekele',
+          bio: 'Healthcare advocate, medical student research, and community wellness.',
+          department: 'Public Health',
+          graduationYear: 2025,
+          avatarUrl: '/images/avatars/marta.svg',
+          privacyLevel: 'CAMPUS_ONLY',
+        },
+      },
+    },
+  });
+
+  const studentYonas = await prisma.user.create({
+    data: {
+      email: 'yonas.alemu@dbu.edu.et',
+      passwordHash: defaultPasswordHash,
+      role: 'STUDENT',
+      status: 'ACTIVE',
+      emailVerifiedAt: new Date(),
+      profile: {
+        create: {
+          displayName: 'Yonas Alemu',
+          bio: 'Data analytics, econometrics, and campus economics club coordinator.',
+          department: 'Economics',
+          graduationYear: 2026,
+          avatarUrl: '/images/avatars/yonas.svg',
+          privacyLevel: 'CAMPUS_ONLY',
+        },
+      },
+    },
+  });
+
   // 4. Friendships and Connections
-  console.log('🤝 Establishing canonical friendships...');
+  console.log('🤝 Establishing canonical friendships and sample requests...');
   const [uA, uB] = studentA.id < studentB.id ? [studentA.id, studentB.id] : [studentB.id, studentA.id];
   await prisma.friendship.create({
     data: { user1Id: uA, user2Id: uB },
+  });
+
+  // Outgoing pending friend request from studentA to Meaza
+  await prisma.friendRequest.create({
+    data: {
+      senderId: studentA.id,
+      receiverId: studentMeaza.id,
+      status: 'PENDING',
+    },
+  });
+
+  // Outgoing pending friend request from studentA to Haile
+  await prisma.friendRequest.create({
+    data: {
+      senderId: studentA.id,
+      receiverId: studentHaile.id,
+      status: 'PENDING',
+    },
+  });
+
+  // Incoming pending friend request from Lidya to studentA (allows testing Accept/Reject)
+  await prisma.friendRequest.create({
+    data: {
+      senderId: studentLidya.id,
+      receiverId: studentA.id,
+      status: 'PENDING',
+    },
   });
 
   // 5. Social Feed Posts, Comments, and Likes

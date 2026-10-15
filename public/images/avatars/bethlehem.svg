@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bg-bethlehem" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#db2777"/>
+      <stop offset="100%" stop-color="#be185d"/>
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="60" fill="url(#bg-bethlehem)"/>
+  <ellipse cx="60" cy="62" rx="24" ry="28" fill="#a56c42"/>
+  <path d="M 30 55 C 30 25, 90 25, 90 55 C 96 75, 94 92, 90 95 C 80 82, 80 65, 80 65 C 80 65, 40 65, 40 65 C 40 65, 40 82, 30 95 C 26 92, 24 75, 30 55 Z" fill="#18181b"/>
+  <!-- Eyes -->
+  <circle cx="50" cy="60" r="3" fill="#18181b"/>
+  <circle cx="70" cy="60" r="3" fill="#18181b"/>
+  <circle cx="51" cy="59" r="1" fill="#ffffff"/>
+  <circle cx="71" cy="59" r="1" fill="#ffffff"/>
+  <!-- Eyebrows -->
+  <path d="M 44 54 Q 50 51 55 54" stroke="#18181b" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M 65 54 Q 70 51 76 54" stroke="#18181b" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Smile -->
+  <path d="M 52 72 Q 60 78 68 72" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  
+  <!-- Shoulders & Shirt -->
+  <path d="M 28 120 C 28 98, 42 90, 60 90 C 78 90, 92 98, 92 120 Z" fill="#f472b6"/>
+</svg>

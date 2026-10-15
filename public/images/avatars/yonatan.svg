@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bg-yonatan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#3730a3"/>
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="60" fill="url(#bg-yonatan)"/>
+  <ellipse cx="60" cy="62" rx="24" ry="28" fill="#7a4825"/>
+  <path d="M 34 48 C 34 28, 86 28, 86 48 C 86 48, 88 38, 76 34 C 64 30, 48 32, 34 48 Z" fill="#171717"/>
+       <circle cx="42" cy="38" r="6" fill="#171717"/>
+       <circle cx="52" cy="34" r="7" fill="#171717"/>
+       <circle cx="64" cy="33" r="7" fill="#171717"/>
+       <circle cx="76" cy="37" r="6" fill="#171717"/>
+  <!-- Eyes -->
+  <circle cx="50" cy="60" r="3" fill="#18181b"/>
+  <circle cx="70" cy="60" r="3" fill="#18181b"/>
+  <circle cx="51" cy="59" r="1" fill="#ffffff"/>
+  <circle cx="71" cy="59" r="1" fill="#ffffff"/>
+  <!-- Eyebrows -->
+  <path d="M 44 54 Q 50 51 55 54" stroke="#18181b" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M 65 54 Q 70 51 76 54" stroke="#18181b" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Smile -->
+  <path d="M 52 72 Q 60 78 68 72" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  
+  <!-- Shoulders & Shirt -->
+  <path d="M 28 120 C 28 98, 42 90, 60 90 C 78 90, 92 98, 92 120 Z" fill="#6366f1"/>
+</svg>
