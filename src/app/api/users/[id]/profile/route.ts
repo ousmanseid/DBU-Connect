@@ -46,7 +46,8 @@ export async function GET(
     // Check relationship if viewer is logged in
     const viewer = await getCurrentUser();
     let isFriend = false;
-    let hasPendingRequest = false;
+    let sentRequestId: string | null = null;
+    let receivedRequestId: string | null = null;
 
     if (viewer && viewer.id !== user.id) {
       const [u1, u2] = viewer.id < user.id ? [viewer.id, user.id] : [user.id, viewer.id];
@@ -56,15 +57,94 @@ export async function GET(
       isFriend = !!friendship;
 
       if (!isFriend) {
-        const pending = await prisma.friendRequest.findFirst({
+        const sent = await prisma.friendRequest.findFirst({
           where: {
             senderId: viewer.id,
             receiverId: user.id,
             status: 'PENDING',
           },
         });
-        hasPendingRequest = !!pending;
+        sentRequestId = sent?.id || null;
+
+        const received = await prisma.friendRequest.findFirst({
+          where: {
+            senderId: user.id,
+            receiverId: viewer.id,
+            status: 'PENDING',
+          },
+        });
+        receivedRequestId = received?.id || null;
       }
+    }
+
+    // Fetch user's campus posts
+    const posts = await prisma.post.findMany({
+      where: {
+        authorId: user.id,
+        status: 'ACTIVE',
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 20,
+      include: {
+        author: {
+          select: {
+            id: true,
+            role: true,
+            profile: {
+              select: {
+                displayName: true,
+                avatarUrl: true,
+                department: true,
+              },
+            },
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+          },
+        },
+        likes: viewer
+          ? {
+              where: { userId: viewer.id },
+              select: { userId: true },
+            }
+          : false,
+      },
+    });
+
+    const formattedPosts = posts.map((p) => ({
+      id: p.id,
+      content: p.content,
+      mediaUrl: p.mediaUrl,
+      mediaType: p.mediaType,
+      visibility: p.visibility,
+      shareCount: p.shareCount,
+      createdAt: p.createdAt,
+      author: {
+        id: p.author.id,
+        role: p.author.role,
+        displayName: p.author.profile?.displayName || 'DBU Student',
+        avatarUrl: p.author.profile?.avatarUrl || null,
+        department: p.author.profile?.department || 'Debre Berhan University',
+      },
+      likeCount: p._count.likes,
+      commentCount: p._count.comments,
+      hasLiked: viewer && Array.isArray(p.likes) ? p.likes.length > 0 : false,
+    }));
+
+    let relationshipState: 'SELF' | 'FRIENDS' | 'REQUEST_SENT' | 'REQUEST_RECEIVED' | 'CAN_REQUEST';
+    if (viewer?.id === user.id) {
+      relationshipState = 'SELF';
+    } else if (isFriend) {
+      relationshipState = 'FRIENDS';
+    } else if (sentRequestId) {
+      relationshipState = 'REQUEST_SENT';
+    } else if (receivedRequestId) {
+      relationshipState = 'REQUEST_RECEIVED';
+    } else {
+      relationshipState = 'CAN_REQUEST';
     }
 
     return NextResponse.json({
@@ -84,10 +164,13 @@ export async function GET(
           friendCount,
         },
         relationship: {
+          state: relationshipState,
           isSelf: viewer?.id === user.id,
           isFriend,
-          hasPendingRequest,
+          sentRequestId,
+          receivedRequestId,
         },
+        posts: formattedPosts,
       },
     });
   } catch (error) {
