@@ -1,0 +1,359 @@
+// Prisma Schema for DBU Connect
+// Relational schema for SQLite (development/testing) and PostgreSQL (production)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+// 1. User & Account Management
+// -----------------------------------------------------------------------------
+
+model User {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  passwordHash    String
+  role            String    @default("STUDENT") // STUDENT, ADMIN, REGISTRAR, SUPER_ADMIN
+  status          String    @default("ACTIVE")  // ACTIVE, SUSPENDED, DISABLED
+  emailVerifiedAt DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relationships
+  profile              Profile?
+  posts                Post[]
+  likes                Like[]
+  comments             Comment[]
+  sentFriendRequests   FriendRequest[]      @relation("SentRequests")
+  receivedFriendReqs   FriendRequest[]      @relation("ReceivedRequests")
+  sentMessages         Message[]
+  conversationMembers  ConversationMember[]
+  notifications        Notification[]       @relation("UserNotifications")
+  actorNotifications   Notification[]       @relation("ActorNotifications")
+  marketplaceListings  MarketplaceListing[]
+  savedListings        SavedListing[]
+  reportsFiled         Report[]             @relation("Reporter")
+  auditLogs            AuditLog[]
+}
+
+// -----------------------------------------------------------------------------
+// 2. Registrar Student Roster & Eligibility
+// -----------------------------------------------------------------------------
+
+model StudentRoster {
+  id                String    @id @default(uuid())
+  studentId         String    @unique // Official institutional ID, e.g. "DBU/14/0892"
+  universityEmail   String    @unique // Official email, e.g. "abebe.k@dbu.edu.et"
+  fullName          String
+  department        String
+  faculty           String
+  admissionYear     Int
+  eligibilityStatus String    @default("ELIGIBLE") // ELIGIBLE, PENDING_REVIEW, REVOKED
+  claimed           Boolean   @default(false)
+  claimedAt         DateTime?
+  claimedByUserId   String?   @unique
+  importBatchId     String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([universityEmail])
+  @@index([studentId])
+}
+
+// Verification tokens for roster claim and email confirmation
+model VerificationToken {
+  id        String   @id @default(uuid())
+  email     String
+  tokenHash String   @unique
+  type      String   // ROSTER_CLAIM, PASSWORD_RESET
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
+// -----------------------------------------------------------------------------
+// 3. Profiles & Privacy Settings
+// -----------------------------------------------------------------------------
+
+model Profile {
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName    String
+  bio            String?
+  avatarUrl      String?
+  department     String?
+  graduationYear Int?
+  phone          String?
+  privacyLevel   String   @default("CAMPUS_ONLY") // PUBLIC, CAMPUS_ONLY, FRIENDS_ONLY
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+// 4. Social Posts, Media, Likes, and Comments
+// -----------------------------------------------------------------------------
+
+model Post {
+  id         String    @id @default(uuid())
+  authorId   String
+  author     User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content    String
+  mediaUrl   String?
+  mediaType  String?   // IMAGE, DOCUMENT
+  visibility String    @default("CAMPUS") // CAMPUS, FRIENDS_ONLY
+  status     String    @default("ACTIVE") // ACTIVE, REMOVED, REPORTED
+  shareCount Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  likes      Like[]
+  comments   Comment[]
+
+  @@index([authorId])
+  @@index([createdAt])
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId]) // Enforces database-level duplicate like prevention
+  @@index([postId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content   String
+  status    String   @default("ACTIVE") // ACTIVE, REMOVED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([postId])
+}
+
+// -----------------------------------------------------------------------------
+// 5. Friendships, Requests & Blocks
+// -----------------------------------------------------------------------------
+
+model FriendRequest {
+  id         String   @id @default(uuid())
+  senderId   String
+  sender     User     @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver   User     @relation("ReceivedRequests", fields: [receiverId], references: [id], onDelete: Cascade)
+  status     String   @default("PENDING") // PENDING, ACCEPTED, DECLINED, CANCELLED
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([senderId, receiverId])
+  @@index([receiverId])
+}
+
+model Friendship {
+  id        String   @id @default(uuid())
+  user1Id   String   // user1Id < user2Id lexicographically enforced for canonical pair
+  user2Id   String
+  createdAt DateTime @default(now())
+
+  @@unique([user1Id, user2Id])
+  @@index([user1Id])
+  @@index([user2Id])
+}
+
+model Block {
+  id        String   @id @default(uuid())
+  blockerId String
+  blockedId String
+  createdAt DateTime @default(now())
+
+  @@unique([blockerId, blockedId])
+  @@index([blockerId])
+}
+
+// -----------------------------------------------------------------------------
+// 6. Direct Messaging & Activity Notifications
+// -----------------------------------------------------------------------------
+
+model Conversation {
+  id        String               @id @default(uuid())
+  type      String               @default("DIRECT") // DIRECT
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+
+  members   ConversationMember[]
+  messages  Message[]
+}
+
+model ConversationMember {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastReadAt     DateTime     @default(now())
+  joinedAt       DateTime     @default(now())
+
+  @@unique([conversationId, userId])
+  @@index([userId])
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  content        String
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+model Notification {
+  id           String    @id @default(uuid())
+  recipientId  String
+  recipient    User      @relation("UserNotifications", fields: [recipientId], references: [id], onDelete: Cascade)
+  actorId      String?
+  actor        User?     @relation("ActorNotifications", fields: [actorId], references: [id], onDelete: SetNull)
+  type         String    // FRIEND_REQUEST, FRIEND_ACCEPTED, LIKE, COMMENT, MESSAGE, MARKETPLACE, SYSTEM
+  resourceId   String?
+  resourceType String?
+  message      String
+  read         Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+
+  @@index([recipientId, read])
+}
+
+// -----------------------------------------------------------------------------
+// 7. Campus Marketplace
+// -----------------------------------------------------------------------------
+
+model MarketplaceListing {
+  id          String         @id @default(uuid())
+  sellerId    String
+  seller      User           @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  category    String         // Textbooks, Electronics, Dorm Gear, Clothing, Services, Other
+  price       Float
+  currency    String         @default("ETB")
+  condition   String         // New, Like New, Good, Fair
+  status      String         @default("ACTIVE") // ACTIVE, RESERVED, SOLD, REMOVED
+  imageUrl    String?
+  location    String?        // e.g. "Main Campus, Dorm Block 12"
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  savedBy     SavedListing[]
+
+  @@index([category])
+  @@index([status])
+  @@index([sellerId])
+}
+
+model SavedListing {
+  id        String             @id @default(uuid())
+  userId    String
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listingId String
+  listing   MarketplaceListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  createdAt DateTime           @default(now())
+
+  @@unique([userId, listingId])
+  @@index([userId])
+}
+
+// -----------------------------------------------------------------------------
+// 8. Administration, Moderation & Audit Logs
+// -----------------------------------------------------------------------------
+
+model Report {
+  id             String    @id @default(uuid())
+  reporterId     String
+  reporter       User      @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  targetType     String    // POST, COMMENT, LISTING, USER
+  targetId       String
+  reason         String
+  details        String?
+  status         String    @default("PENDING") // PENDING, RESOLVED, DISMISSED
+  moderatorNotes String?
+  reviewedBy     String?
+  resolvedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([status])
+}
+
+model AdminInvitation {
+  id         String    @id @default(uuid())
+  email      String    @unique
+  role       String    // ADMIN, REGISTRAR
+  tokenHash  String    @unique
+  invitedBy  String
+  expiresAt  DateTime
+  acceptedAt DateTime?
+  status     String    @default("PENDING") // PENDING, ACCEPTED, REVOKED
+  createdAt  DateTime  @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String
+  actor      User     @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  action     String   // ROSTER_IMPORT, ROLE_ASSIGNED, USER_SUSPENDED, POST_MODERATED, INVITATION_SENT
+  targetType String?
+  targetId   String?
+  details    String?  // JSON stringified details
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  @@index([action])
+  @@index([actorId])
+  @@index([createdAt])
+}
+
+// -----------------------------------------------------------------------------
+// 9. Menilik AI University Knowledge Base
+// -----------------------------------------------------------------------------
+
+model AIPolicyDocument {
+  id             String          @id @default(uuid())
+  title          String
+  category       String          // ACADEMIC, DORMITORY, REGISTRAR, DISCIPLINE, LIBRARY
+  version        String          @default("1.0")
+  approvalStatus String          @default("OFFICIALLY_APPROVED") // OFFICIALLY_APPROVED, DRAFT
+  sourceUrl      String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  chunks         AIPolicyChunk[]
+}
+
+model AIPolicyChunk {
+  id          String           @id @default(uuid())
+  documentId  String
+  document    AIPolicyDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  section     String
+  content     String
+  keywords    String           // Space/comma-separated searchable keywords for deterministic RAG retrieval
+  createdAt   DateTime         @default(now())
+
+  @@index([documentId])
+}
