@@ -7,11 +7,8 @@ describe('Student Registration & Eligibility Integration Tests', () => {
   const testEmail = 'test.student.reg@dbu.edu.et';
 
   beforeAll(async () => {
-    // Clean up any previous test artifacts
-    await prisma.comment.deleteMany();
-    await prisma.like.deleteMany();
-    await prisma.post.deleteMany();
-    await prisma.profile.deleteMany();
+    // Clean up any previous test artifacts for this test suite
+    await prisma.profile.deleteMany({ where: { user: { email: testEmail } } });
     await prisma.user.deleteMany({ where: { email: testEmail } });
     await prisma.studentRoster.deleteMany({ where: { studentId: testStudentId } });
 
