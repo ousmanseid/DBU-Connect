@@ -42,6 +42,8 @@ Thumbs.db
 .vscode/
 .idea/
 *.suo
+*.tsbuildinfo
+
 # User uploaded media
 /public/uploads/*
 !/public/uploads/.gitkeep

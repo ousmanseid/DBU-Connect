@@ -1,20 +1,18 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/navigation';
 import { usePathname, useRouter } from 'next/navigation';
 import {
   Home,
+  PlusSquare,
   MessageSquare,
   ShoppingBag,
   Sparkles,
   User,
+  Users,
   Shield,
   LogOut,
   LogIn,
-  Bell,
-  Menu,
-  X,
   GraduationCap,
 } from 'lucide-react';
 
@@ -35,7 +33,6 @@ export default function Navigation() {
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [unreadMessages, setUnreadMessages] = useState(0);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     fetch('/api/auth/me')
@@ -77,17 +74,20 @@ export default function Navigation() {
     router.refresh();
   };
 
+  // Main navigation required structure
   const navLinks = [
-    { href: '/', label: 'Campus Feed', icon: Home },
+    { href: '/', label: 'Home', icon: Home },
+    { href: '/create', label: 'Create', icon: PlusSquare, highlight: true },
     {
       href: '/inbox',
       label: 'Inbox',
       icon: MessageSquare,
-      badge: unreadMessages > 0 ? unreadMessages : undefined,
+      badge: unreadMessages + unreadNotifications > 0 ? unreadMessages + unreadNotifications : undefined,
     },
     { href: '/marketplace', label: 'Marketplace', icon: ShoppingBag },
     { href: '/menilik', label: 'Menilik AI', icon: Sparkles, accent: true },
     { href: '/profile', label: 'Profile', icon: User },
+    { href: '/students', label: 'Discover Students', icon: Users },
   ];
 
   const isStaff =
@@ -103,6 +103,20 @@ export default function Navigation() {
       icon: Shield,
     });
   }
+
+  // Mobile bottom navigation (5 primary items for ergonomic thumb navigation)
+  const mobileNavLinks = [
+    { href: '/', label: 'Home', icon: Home },
+    { href: '/students', label: 'Students', icon: Users },
+    { href: '/create', label: 'Create', icon: PlusSquare, isPrimary: true },
+    {
+      href: '/inbox',
+      label: 'Inbox',
+      icon: MessageSquare,
+      badge: unreadMessages + unreadNotifications > 0,
+    },
+    { href: '/profile', label: 'Profile', icon: User },
+  ];
 
   return (
     <>
@@ -149,17 +163,36 @@ export default function Navigation() {
                   borderRadius: 'var(--radius-md)',
                   fontSize: '0.9rem',
                   fontWeight: isActive ? 600 : 500,
-                  color: isActive ? '#fff' : link.accent ? 'var(--primary-gold)' : 'var(--text-muted)',
-                  background: isActive ? 'var(--bg-surface-elevated)' : 'transparent',
-                  border: isActive ? '1px solid var(--border-light)' : '1px solid transparent',
+                  color: isActive ? '#fff' : link.accent ? 'var(--primary-gold)' : link.highlight ? 'var(--accent-blue)' : 'var(--text-muted)',
+                  background: isActive
+                    ? 'var(--bg-surface-elevated)'
+                    : link.highlight
+                    ? 'rgba(56, 189, 248, 0.08)'
+                    : 'transparent',
+                  border: isActive
+                    ? '1px solid var(--border-light)'
+                    : link.highlight
+                    ? '1px dashed rgba(56, 189, 248, 0.3)'
+                    : '1px solid transparent',
                   transition: 'all var(--transition-fast)',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <Icon size={18} color={link.accent ? 'var(--primary-gold)' : 'currentColor'} />
+                  <Icon
+                    size={18}
+                    color={
+                      isActive
+                        ? 'var(--primary-gold)'
+                        : link.accent
+                        ? 'var(--primary-gold)'
+                        : link.highlight
+                        ? 'var(--accent-blue)'
+                        : 'currentColor'
+                    }
+                  />
                   <span>{link.label}</span>
                 </div>
-                {link.badge && (
+                {link.badge !== undefined && (
                   <span className="badge badge-gold" style={{ padding: '0.15rem 0.5rem' }}>
                     {link.badge}
                   </span>
@@ -237,9 +270,35 @@ export default function Navigation() {
 
       {/* Mobile Bottom Navigation Bar */}
       <nav className="mobile-nav">
-        {navLinks.slice(0, 5).map((link) => {
+        {mobileNavLinks.map((link) => {
           const Icon = link.icon;
           const isActive = pathname === link.href;
+
+          if (link.isPrimary) {
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                aria-label="Create Post"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, var(--primary-gold) 0%, #ea580c 100%)',
+                  color: '#000',
+                  boxShadow: 'var(--shadow-gold-glow)',
+                  transform: 'translateY(-8px)',
+                  transition: 'transform var(--transition-fast)',
+                }}
+              >
+                <Icon size={22} color="#000" />
+              </a>
+            );
+          }
+
           return (
             <a
               key={link.href}
@@ -256,7 +315,7 @@ export default function Navigation() {
               }}
             >
               <Icon size={20} />
-              <span>{link.label.split(' ')[0]}</span>
+              <span>{link.label}</span>
               {link.badge && (
                 <span
                   style={{
